@@ -38,11 +38,11 @@ def serial_ports():
 
 def readserial():
     serials = serial_ports()
-    theserial = serial.Serial(serials[0], baudrate=115200, timeout=1)
+    theserial = serial.Serial(serials[0], baudrate=115200, timeout=2)
     # nie masz tylu wartości tablicy/portów na swoim komputerze żeby chcieć 13stą wartość
     print(theserial)
-
-    return theserial
+    data = theserial.readline()
+    return data
 
 
 """   
@@ -59,7 +59,7 @@ mydata = str(readserial())
 
 # data shift to string
 payload = str(mydata)
-print(payload)
+print("payload:" + payload)
 
 
 # creates window
@@ -70,14 +70,14 @@ window.title('stardust interface')
 # wysokosc balonu
 def pars_altitude():
 
-    altitude = payload[0:8]
+    altitude = payload[2:10]
     conversed_altitude = int(altitude, 16)
     return str(conversed_altitude)
 
 
 # szerokosc geograficzna
 def pars_latitude():
-    latitude = payload[8:16]
+    latitude = payload[10:18]
     conversed_latitude = int(latitude, 16)
     lat = conversed_latitude/10000  # czy dzielenie w strunie zadziałą? odp:NIE
     return str(lat)
@@ -85,7 +85,7 @@ def pars_latitude():
 
 # dlugosc geograficzna
 def pars_longitude():
-    longitude = payload[16:24]
+    longitude = payload[18:26]
     conversed_longititude = int(longitude, 16)
     long = conversed_longititude/10000
     return str(long)
@@ -93,7 +93,7 @@ def pars_longitude():
 
 # srednia temperatura probek
 def pars_temperature():
-    temperature = payload[24:28]
+    temperature = payload[26:30]
     conversed_temperature = int(temperature, 16)
     te = conversed_temperature/100
     return str(te)
@@ -102,28 +102,29 @@ def pars_temperature():
 def pars_status():
     # temperatura - status probek
     # zmiana zmiennej!!!!!!
-    temp_info1 = payload[28:34]
+    temp_info1 = payload[30:36]
+    print ("temp_info1: " + temp_info1)
     temp_info2 = int(temp_info1, 16)
-    temp_info3 = bin(temp_info2)
-    return temp_info3
+    #temp_info3 = bin(temp_info2)
+    return temp_info2
 
 
-onion = str(pars_status)
-
+onion = format(pars_status(), '#024b')
+print("onion: " + onion)
 # brakuje konwersji na wartości  binarne
 # S11 to probka nr 11 itd.
-S11 = onion[0:2]
-S10 = onion[2:4]
-S9 = onion[4:6]
-S8 = onion[6:8]
-S7 = onion[8:10]
-S6 = onion[10:12]
-S5 = onion[12:14]
-S4 = onion[14:16]
-S3 = onion[16:18]
-S2 = onion[18:20]
-S1 = onion[20:22]
-S0 = onion[22:24]
+S11 = onion[2:4]
+S10 = onion[4:6]
+S9 = onion[6:8]
+S8 = onion[8:10]
+S7 = onion[10:12]
+S6 = onion[12:14]
+S5 = onion[14:16]
+S4 = onion[16:18]
+S3 = onion[18:20]
+S2 = onion[20:22]
+S1 = onion[22:24]
+S0 = onion[24:26]
 
 specimen = [S11, S10, S9, S8, S7, S6, S5, S4, S3, S2, S1, S0]
 spec = str(specimen)
